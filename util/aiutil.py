@@ -6,6 +6,7 @@ from PIL.ImageDraw import Draw as drawer
 import numpy as np
 
 import cv2
+import imutils
 
 # Función para generar una sequencia
 def infinite_sequence():
