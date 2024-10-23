@@ -1,7 +1,7 @@
 from PIL import Image
 from util import aiutil
 
-img_path = "./Prueba.jpg" # Ruta de la imagen
+img_path = "./images/Prueba.jpg" # Ruta de la imagen
 def_size = (1128, 1226)   # Tamaño por defecto
 
 # Leemos la imágen y estandarizamos su tamaño
