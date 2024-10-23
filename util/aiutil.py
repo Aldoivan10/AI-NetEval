@@ -1,8 +1,9 @@
-from PIL import Image
-from typing import List
 from cv2.typing import MatLike, Rect, Point, Vec3i
-import imutils.contours as cnts
+import imutils.perspective as perspective
 from PIL.ImageDraw import Draw as drawer
+import imutils.contours as cnts
+from typing import List
+from PIL import Image
 import numpy as np
 
 import cv2
@@ -85,3 +86,24 @@ def draw_cnts(img: Image.Image, cnts: List[MatLike]):
         draw_poly(img, [tuple(row) for row in poly], width=5)
         # Dibujamos las dimensiones
         draw_text(img,  f"{next(seq)}: {rect[2]} x {rect[3]}", rect, fill=(0,0,255), width=2, font_size=30)
+
+# Función para obtener las respuestas de una columna
+def get_responses(img: Image.Image, countours: List[MatLike], rows: int = 10) -> List[List[Image.Image]]:
+    # Lista de respuestas
+    responses = []
+    # Convertimos la imagen en un arreglo numpy
+    arr = np.array(img)
+    # Obtenemos las columnas
+    cols = [perspective.four_point_transform(arr, poly) for poly, _ in countours]
+    # Transformamos cada columna en una imagen
+    cols = [Image.fromarray(c) for c in cols]
+    # Dividimos cada columna
+    for col in cols: 
+        # Obtenemos las dimenciones de una fila
+        w, h = col.size[0], col.size[1] // rows
+        # Obtenemos las filas con las respuestas
+        img_rows = [col.crop([0, h * i, w, h * (i + 1)]) for i in range(rows)]
+        # Agregamos las filas a la lista de respuestas
+        responses.append(img_rows)
+    # Retornamos la lista de respuestas
+    return responses
