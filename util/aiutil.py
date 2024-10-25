@@ -1,5 +1,5 @@
-from cv2.typing import MatLike, Rect, Point, Vec3i
 import imutils.perspective as perspective
+from cv2.typing import MatLike, Rect
 import imutils.contours as cnts
 from typing import List
 from PIL import Image
@@ -7,6 +7,12 @@ import numpy as np
 
 import cv2
 import imutils
+import tensorflow as tf
+
+# Función para obtener la primer imágen de un dataset
+def get_first_img(dataset: tf.data.Dataset) -> tf.image:
+    images, _ = next(iter(dataset))
+    return images[0]
 
 # Función para aproximar el contorno a un polígono, regular o irregular
 def approx_contour(contour: MatLike, regular: bool = True) -> tuple[MatLike, Rect]:

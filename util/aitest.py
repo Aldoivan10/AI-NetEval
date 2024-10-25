@@ -3,6 +3,10 @@ from PIL.ImageDraw import Draw as drawer
 from typing import List
 from PIL import Image
 
+import imutils
+import numpy as np
+import tensorflow as tf
+
 # Función para generar una sequencia
 def infinite_sequence():
     num = 1
@@ -43,3 +47,14 @@ def draw_cnts(img: Image.Image, cnts: List[MatLike]):
         draw_poly(img, [tuple(row) for row in poly], width=5)
         # Dibujamos las dimensiones
         draw_text(img,  f"{next(seq)}: {rect[2]} x {rect[3]}", rect, fill=(0,0,255), width=2, font_size=30)
+
+# Función para mostrar imágenes de un dataset 
+def show_img(image: tf.image):
+    img = imutils.opencv2matplotlib(image.numpy().astype("uint8"))
+    Image.fromarray(img).show()
+
+# Función para mostrar el mínimo y máximo valor de una imagen
+def print_min_max(dataset: tf.data.Dataset, name = "Dataset"):
+    images, _ = next(iter(dataset))
+    img = images[0]
+    print(f"{name}: Min: {np.min(img)}, Max: {np.max(img)}")
