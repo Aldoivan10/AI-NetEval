@@ -71,3 +71,27 @@ def get_responses(img: Image.Image, countours: List[MatLike], rows: int = 10) ->
         responses.append(img_rows)
     # Retornamos la lista de respuestas
     return responses
+
+# Función para hacer cuadrada una imagen
+def set_square(image: Image.Image, size = 255, pad_color = (255,255,255)):
+    # Obtenemos el ancho y alto de la imagen
+    img_w, img_h = image.size
+    # Si ya es del tamaño deseado
+    if img_w == size and  img_h == size:
+        return image
+    # Creamos una imagen del tamaño deseado con el color de relleno
+    new_img = Image.new(image.mode, (size, size), pad_color)
+    # Si el ancho es menor que el alto
+    if img_w < img_h:
+        # Redimensionamos el alto de la imagen
+        image = image.resize((img_w, size))
+        # Pegamos la imagen en la nueva imagen
+        new_img.paste(image, ((size - img_w) // 2, 0)) 
+    # El alto es menor que el ancho
+    else:
+        # Redimensionamos el ancho de la imagen
+        image = image.resize((size, img_h))
+        # Pegamos la imagen en la nueva imagen
+        new_img.paste(image, (0, (size - img_h) // 2))
+    #Retornamos la nueva imagen
+    return new_img
