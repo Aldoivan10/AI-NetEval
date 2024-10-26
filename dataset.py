@@ -19,8 +19,13 @@ save_path = "./Train"
 
 # Obtenemos las imágenes
 responses = aiutil.get_responses(img, countours)
+# Transformamos las imágenes en imagenes cuadradas
+responses = [[aiutil.set_square(img) for img in cols] for cols in responses]
+
 # Guardamos las imágenes (Solo para el entrenamiento)
 for c, rows in enumerate(responses):
     for i,row in enumerate(rows):
         # Se guarda la respuesta para posteriormente clasificarla en subcarpetas
+        row.show()
+        exit()
         row.save(f"{save_path}/{c}_{i}.jpg")
