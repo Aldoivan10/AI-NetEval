@@ -49,9 +49,9 @@ def draw_cnts(img: Image.Image, cnts: List[MatLike]):
         draw_text(img,  f"{next(seq)}: {rect[2]} x {rect[3]}", rect, fill=(0,0,255), width=2, font_size=30)
 
 # Función para mostrar imágenes de un dataset 
-def show_img(image: tf.image):
+def to_img(image: tf.image):
     img = imutils.opencv2matplotlib(image.numpy().astype("uint8"))
-    Image.fromarray(img).show()
+    return Image.fromarray(img)
 
 # Función para mostrar el mínimo y máximo valor de una imagen
 def print_min_max(dataset: tf.data.Dataset, name = "Dataset"):
