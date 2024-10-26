@@ -80,7 +80,7 @@ def set_square(image: Image.Image, size = 255, pad_color = (255,255,255)):
     if img_w == size and  img_h == size:
         return image
     # Creamos una imagen del tamaño deseado con el color de relleno
-    new_img = Image.new(image.mode, (size, size), pad_color)
+    new_img = Image.new('RGB', (size, size), pad_color)
     # Si el ancho es menor que el alto
     if img_w < img_h:
         # Redimensionamos el alto de la imagen
