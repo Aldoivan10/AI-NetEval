@@ -111,7 +111,3 @@ def draw_frame(img: Image.Image, color: int = 255, thickness: int = 20):
     drawer = Draw(img)
     # Dibujamos el marco
     drawer.line([(0,0), (w, 0),(w, h), (0,h), (0,0)], fill=color, width=thickness)
-
-# Función para convertir a blanco un color si pasa el treshold
-def white_filter(img: Image.Image, threshold: int = 240):
-    return img.point(lambda p: 255 if p >= threshold else p)
