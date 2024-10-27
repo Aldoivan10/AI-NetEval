@@ -6,7 +6,7 @@ def_size = (1128, 1226)          # Tamaño por defecto
 
 # Leemos la imágen y estandarizamos su tamaño
 img = Image.open(img_path).resize(def_size)
-# Reducimos el ruido
+# Reducimos el ruido y convertimos en escala de grises
 img = aiutil.smooth_img(img)
 # Imagen auxiliar para dibujar lo obtenido (Solo para pruebas)
 temp = img.copy()
@@ -30,7 +30,5 @@ for c, rows in enumerate(responses):
         aiutil.draw_frame(image)
         # Creamos una imagen cuadrada de 256 x 256
         image = aiutil.square_img(image)
-        # Binarizamos la imagen
-        image = aiutil.binarize_img(image)
         # Se guarda la respuesta para posteriormente clasificarla en subcarpetas
         image.save(f"{save_path}/{c}_{i}.jpg")
