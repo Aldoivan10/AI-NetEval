@@ -113,5 +113,5 @@ def draw_frame(img: Image.Image, color: int = 255, thickness: int = 20):
     drawer.line([(0,0), (w, 0),(w, h), (0,h), (0,0)], fill=color, width=thickness)
 
 # Función para convertir una imagen a blanco y negro
-def binarize_img(img: Image.Image, threshold = 165):
+def binarize_img(img: Image.Image, threshold: int = 200):
     return img.point(lambda x: x > threshold and 255).convert("1")
