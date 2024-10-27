@@ -1,6 +1,7 @@
 import imutils.perspective as perspective
 from cv2.typing import MatLike, Rect
 import imutils.contours as cnts
+from PIL.ImageDraw import Draw
 from typing import List
 from PIL import Image
 import numpy as np
@@ -28,14 +29,20 @@ def approx_contour(contour: MatLike, regular: bool = True) -> tuple[MatLike, Rec
     # Squeeze elimina los ejes vacios y boundingRect convierte la aproximación en un Rect
     return np.squeeze(approx, axis=1), np.array(cv2.boundingRect(approx), dtype=np.uint16)
 
+def smooth_img(img: Image.Image):
+    # Convertimos a escala de grises
+    img = img.convert('L')
+    # Convertimos en arreglo numpy
+    img = np.array(img)
+    # Aplicamos un filtro para reducir el ruido
+    img = cv2.bilateralFilter(img, d=9, sigmaColor=75, sigmaSpace=75)
+    # Retornamos la imagen
+    return Image.fromarray(img)
+
 # Función para obtener los contornos ordenados de una imagen
 def get_countours(img: Image.Image,  min_h: int = 100) -> List[MatLike]:
-    # Convertimos a escala de grises
-    img_process = img.convert('L')
     # Convertimos en arreglo numpy
-    img_process = np.array(img_process)
-    # Aplicamos un filtro para reducir el ruido
-    img_process = cv2.bilateralFilter(img_process, d=9, sigmaColor=75, sigmaSpace=75)
+    img_process = np.array(img)
     # Aplicamos filtro para detección de bordes
     img_process = imutils.auto_canny(img_process)
     # Buscamos los contornos
@@ -73,7 +80,7 @@ def get_responses(img: Image.Image, countours: List[MatLike], rows: int = 10) ->
     return responses
 
 # Función para hacer cuadrada una imagen
-def set_square(image: Image.Image, size = 255, pad_color = (255,255,255)):
+def square_img(image: Image.Image, size = 256, pad_color = (255,255,255)):
     # Obtenemos el ancho y alto de la imagen
     img_w, img_h = image.size
     # Si ya es del tamaño deseado
@@ -95,3 +102,16 @@ def set_square(image: Image.Image, size = 255, pad_color = (255,255,255)):
         new_img.paste(image, (0, (size - img_h) // 2))
     #Retornamos la nueva imagen
     return new_img
+
+# Función para dibujar un marco
+def draw_frame(img: Image.Image, color: 255, thickness: 20):
+    # Obtenemos el tamaño
+    w, h = img.size
+    # Inicializamos el dibujador
+    drawer = Draw(img)
+    # Dibujamos el marco
+    drawer.line([(0,0), (w, 0),(w, h), (0,h), (0,0)], fill=color, width=thickness)
+
+# Función para convertir una imagen a blanco y negro
+def binarize_img(img: Image.Image, threshold = 165):
+    return img.point(lambda x: x > threshold and 255).convert("1")
