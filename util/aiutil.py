@@ -9,6 +9,10 @@ import numpy as np
 import cv2
 import imutils
 import tensorflow as tf
+import keras.api as keras
+
+# Función de reescalado de valores
+reescaling_func = keras.layers.Rescaling(1./255)
 
 # Función para obtener la primer imágen de un dataset
 def get_first_img(dataset: tf.data.Dataset) -> tf.image:
@@ -111,3 +115,10 @@ def draw_frame(img: Image.Image, color: int = 255, thickness: int = 20):
     drawer = Draw(img)
     # Dibujamos el marco
     drawer.line([(0,0), (w, 0),(w, h), (0,h), (0,0)], fill=color, width=thickness)
+
+# Función de normalizacion
+def normalization_func(img: tf.Tensor, label: tf.Tensor):
+    # Normalizamos la imagen [0-255] a [0-1]
+    img = reescaling_func(img)
+    # Retornamos la imagen y la etiqueta
+    return img, label
