@@ -80,7 +80,7 @@ def get_responses(img: Image.Image, countours: List[MatLike], rows: int = 10) ->
     return responses
 
 # Función para hacer cuadrada una imagen
-def square_img(image: Image.Image, size = 256, pad_color = (255,255,255)):
+def square_img(image: Image.Image, size: int = 256, pad_color: tuple[int, int, int] = (255,255,255)):
     # Obtenemos el ancho y alto de la imagen
     img_w, img_h = image.size
     # Si ya es del tamaño deseado
@@ -104,7 +104,7 @@ def square_img(image: Image.Image, size = 256, pad_color = (255,255,255)):
     return new_img
 
 # Función para dibujar un marco
-def draw_frame(img: Image.Image, color: 255, thickness: 20):
+def draw_frame(img: Image.Image, color: int = 255, thickness: int = 20):
     # Obtenemos el tamaño
     w, h = img.size
     # Inicializamos el dibujador
