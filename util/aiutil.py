@@ -29,13 +29,13 @@ def approx_contour(contour: MatLike, regular: bool = True) -> tuple[MatLike, Rec
     # Squeeze elimina los ejes vacios y boundingRect convierte la aproximación en un Rect
     return np.squeeze(approx, axis=1), np.array(cv2.boundingRect(approx), dtype=np.uint16)
 
-def smooth_img(img: Image.Image):
+def smooth_img(img: Image.Image, sc: int = 75, sp: int = 75):
     # Convertimos a escala de grises
     img = img.convert('L')
     # Convertimos en arreglo numpy
     img = np.array(img)
     # Aplicamos un filtro para reducir el ruido
-    img = cv2.bilateralFilter(img, d=9, sigmaColor=75, sigmaSpace=75)
+    img = cv2.bilateralFilter(img, d=9, sigmaColor=sc, sigmaSpace=sp)
     # Retornamos la imagen
     return Image.fromarray(img)
 
@@ -112,6 +112,6 @@ def draw_frame(img: Image.Image, color: int = 255, thickness: int = 20):
     # Dibujamos el marco
     drawer.line([(0,0), (w, 0),(w, h), (0,h), (0,0)], fill=color, width=thickness)
 
-# Función para convertir una imagen a blanco y negro
-def binarize_img(img: Image.Image, threshold: int = 200):
-    return img.point(lambda x: x > threshold and 255).convert("1")
+# Función para convertir a blanco un color si pasa el treshold
+def white_filter(img: Image.Image, threshold: int = 240):
+    return img.point(lambda p: 255 if p >= threshold else p)
