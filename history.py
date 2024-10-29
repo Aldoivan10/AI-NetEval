@@ -1,4 +1,3 @@
-import keras.api.models as models
 import matplotlib.pyplot as plt
 import json
 import sys
@@ -7,12 +6,11 @@ plt.style.use("./pacoty.mplstyle")
 
 args = sys.argv
 model = 'mish_augmented' if len(args) == 1 else args[1]
-path = f"./models/{model}"
+path = f"./model/{model}"
 
-#  Cargar modelo
-model = models.load_model(f"{path}/best_model.keras")
-# Mostrar el modelo
-model.summary()
+# Mostrar la estructura del modelo
+with open(f'{path}/summary.txt') as f:
+    print(f.read())
 
 # Abrir el historial
 with open(f"{path}/history.json", 'r') as file:
