@@ -1,7 +1,8 @@
 import keras.api as keras
 import tensorflow as tf
 from util import aitest, aiutil
-import pickle
+import os
+import json
 
 # Definicion de variables
 test_dir = './images/Test'
@@ -55,41 +56,59 @@ print(f'Number of devices: {strategy.num_replicas_in_sync}')
 
 # Obtenemos una imagen de muestra del dataset de entrenamiento
 img = aiutil.get_first_img(train_ds)
-
+# Funcion de activacion
+activation_func = 'mish'
 # Creamos el modelo
 with strategy.scope():
     model = keras.Sequential([
         keras.layers.Input(shape=img.shape),
+        keras.layers.RandomZoom(0.1, fill_mode="constant", fill_value=255),
+        keras.layers.RandomRotation(0.1, fill_mode="constant", fill_value=255),
+        keras.layers.RandomTranslation(0.1, 0.1, fill_mode="constant", fill_value=255),
+        keras.layers.RandomBrightness(0.1),
+        keras.layers.RandomContrast(0.1),
         keras.layers.Rescaling(1./255),
-
-        keras.layers.Conv2D(32, (5, 5), strides=2, padding='same', activation='relu'),
+        
+        keras.layers.Conv2D(32, (3, 3), activation=activation_func),
         keras.layers.BatchNormalization(),
-        keras.layers.MaxPooling2D(),
+        keras.layers.MaxPooling2D((2, 2)),
 
-        keras.layers.Conv2D(64, (3, 3), strides=2, padding='same', activation='relu'),
+        keras.layers.Conv2D(64, (3, 3), activation=activation_func),
         keras.layers.BatchNormalization(),
-        keras.layers.MaxPooling2D(),
-        keras.layers.Dropout(0.3),
+        keras.layers.MaxPooling2D((2, 2)),
 
-        keras.layers.Conv2D(128, (3, 3), padding='same', activation='relu'),
+        keras.layers.Conv2D(128, (3, 3), activation=activation_func),
         keras.layers.BatchNormalization(),
-        keras.layers.MaxPooling2D(),
-        keras.layers.Dropout(0.3),
+        keras.layers.MaxPooling2D((2, 2)),
 
-        keras.layers.GlobalAveragePooling2D(),
-        keras.layers.Dense(128, activation='relu', kernel_regularizer=keras.regularizers.l2(0.001)),
+        keras.layers.Conv2D(256, (3, 3), activation=activation_func),
+        keras.layers.BatchNormalization(),
+        keras.layers.MaxPooling2D((2, 2)),
+
+        keras.layers.Flatten(),
+        keras.layers.Dense(512, activation=activation_func),
         keras.layers.Dropout(0.5),
         keras.layers.Dense(len(class_names), activation='softmax')
     ])
     # Compilamos el modelo
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-    
+
+# Numero de intento
+try_num = 3
+# Ruta para guardar los archivos
+saved_path = f'./model/{activation_func}_{try_num}'
+os.makedirs(saved_path, exist_ok=True)
+
 # Callback para guardar el mejor modelo
-model_checkpoint = keras.callbacks.ModelCheckpoint('./model/best_model.keras', save_best_only=True)
+best = keras.callbacks.ModelCheckpoint(f'{saved_path}/best_model.keras', save_best_only=True)
 # Callback para detener el entrenamiento cuando el error de validación se reduzca
-early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=15, restore_best_weights=True)
+# Callback para guardar el log (Solo para revisiones, se puede omitir)
+logger = keras.callbacks.CSVLogger(f"{saved_path}/train.log")
+# Número de epocas
+epochs = 50
 # Entrenamos el modelo
-history = model.fit(train_ds, validation_data=validation_ds, epochs=50, batch_size=32, validation_batch_size=32, callbacks=[early_stopping, model_checkpoint])
+history = model.fit(train_ds, validation_data=validation_ds, epochs=epochs, batch_size=32, validation_batch_size=32, callbacks=[stopping, logger, best])
 # Guardamos el historial (Solo para revisiones)
-with open('./model/history.pkl', 'wb') as file:
-    pickle.dump(history.history, file)
+with open(f'{saved_path}/history.json', 'w') as file:
+    json.dump(history.history, file)
