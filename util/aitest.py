@@ -62,6 +62,7 @@ def print_min_max(dataset: Dataset, name = "Dataset"):
     img = images[0]
     print(f"{name}: Min: {np.min(img)}, Max: {np.max(img)}")
 
+# Función para guardar el modelo
 def save_summary(path: str, model: Sequential):
     with open(f"{path}/summary.txt", 'w') as f:
         with redirect_stdout(f):
