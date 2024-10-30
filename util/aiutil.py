@@ -115,10 +115,3 @@ def draw_frame(img: Image.Image, color: int = 255, thickness: int = 20):
     drawer = Draw(img)
     # Dibujamos el marco
     drawer.line([(0,0), (w, 0),(w, h), (0,h), (0,0)], fill=color, width=thickness)
-
-# Función de normalizacion
-def normalization_func(img: tf.Tensor, label: tf.Tensor):
-    # Normalizamos la imagen [0-255] a [0-1]
-    img = reescaling_func(img)
-    # Retornamos la imagen y la etiqueta
-    return img, label
