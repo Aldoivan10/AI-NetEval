@@ -3,14 +3,14 @@ from PIL.ImageDraw import Draw as drawer
 from typing import List
 from PIL import Image
 
+import math
 import imutils
 import numpy as np
-from tensorflow import Tensor
 from keras import Sequential
+from tensorflow import Tensor
 from contextlib import redirect_stdout
 from tensorflow._api.v2.data import Dataset
 import matplotlib.pyplot as plt
-import math
 
 # Función para generar una sequencia
 def infinite_sequence(start: int = 1):
@@ -71,7 +71,7 @@ def save_summary(path: str, model: Sequential):
             model.summary()
 
 # Funcion para agregar las imágenes a un plot
-def show_responses(batch, predictions: list[str], cols: int = 10):
+def show_responses(batch: Tensor, predictions: list[str], cols: int = 10):
     # tamaño de la figura
     plt.figure(figsize=(10, 10))
     # Calcular numero de filas
