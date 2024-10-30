@@ -20,8 +20,7 @@ train_ds, validation_ds = keras.preprocessing.image_dataset_from_directory(
 test_ds = keras.preprocessing.image_dataset_from_directory(
     test_dir,
     seed=123,
-    color_mode="grayscale",
-    pad_to_aspect_ratio=True)
+    color_mode="grayscale")
 
 # Aplicar la función de preprocesamiento a cada imagen en el lote
 def apply_padding_to_batch(images, labels):
@@ -60,12 +59,12 @@ offset = 0.1 if augmented else 0
 # Creamos el modelo
 model = keras.Sequential([
     keras.layers.Input(shape=img.shape),
-    keras.layers.RandomTranslation(offset, offset, fill_mode="constant", fill_value=255),
-    keras.layers.RandomRotation(offset, fill_mode="constant", fill_value=255),
-    keras.layers.RandomZoom(offset, fill_mode="constant", fill_value=255),
-    keras.layers.RandomBrightness(offset),
-    keras.layers.RandomContrast(offset),
-    keras.layers.Rescaling(1./255),
+    keras.layers.RandomTranslation(offset, offset, fill_mode="constant", fill_value=255), # Capa para randomizar una traslación
+    keras.layers.RandomRotation(offset, fill_mode="constant", fill_value=255), # Capara para randomizar una rotación
+    keras.layers.RandomZoom(offset, fill_mode="constant", fill_value=255), # Capa para randomizar un zoom
+    keras.layers.RandomBrightness(offset), # Capa para randomizar el brillo
+    keras.layers.RandomContrast(offset), # Agregamos una capa para randomizar un contraste
+    keras.layers.Rescaling(1./255), # Capa de normalización, pasar valores de 0-255 a 0-1
     
     keras.layers.Conv2D(32, (3, 3), activation=activation_func),
     keras.layers.BatchNormalization(),
