@@ -1,8 +1,8 @@
+from util import aitest, aiutil
 import keras.api as keras
 import tensorflow as tf
-from util import aitest, aiutil
-import os
 import json
+import os
 
 # Definicion de variables
 test_dir = './images/Test'
@@ -34,7 +34,7 @@ validation_ds: tf.data.Dataset
 
 # Mostramos una imagen para validar el dataset (Solo para pruebas)
 img = aiutil.get_first_img(train_ds)
-""" aitest.to_img(img).show() """
+aitest.to_img(img).show()
 
 # Obtenemos los nombres de las clasificaciones
 class_names = train_ds.class_names
@@ -49,56 +49,53 @@ aitest.print_min_max(validation_ds, 'Validation')
 train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=tf.data.AUTOTUNE)
 validation_ds = validation_ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
 test_ds = test_ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
-
-# Configuramos la estrategia de distribución para trabajar con hilos (Sí es posible)
-strategy = tf.distribute.MultiWorkerMirroredStrategy()
-print(f'Number of devices: {strategy.num_replicas_in_sync}')
-
 # Obtenemos una imagen de muestra del dataset de entrenamiento
 img = aiutil.get_first_img(train_ds)
 # Funcion de activacion
-activation_func = 'mish'
+activation_func = 'relu'
+# Aumento de datos
+augmented = True
+# Offset para las variaciones de datos
+offset = 0.1 if augmented else 0
 # Creamos el modelo
-with strategy.scope():
-    model = keras.Sequential([
-        keras.layers.Input(shape=img.shape),
-        keras.layers.RandomZoom(0.1, fill_mode="constant", fill_value=255),
-        keras.layers.RandomRotation(0.1, fill_mode="constant", fill_value=255),
-        keras.layers.RandomTranslation(0.1, 0.1, fill_mode="constant", fill_value=255),
-        keras.layers.RandomBrightness(0.1),
-        keras.layers.RandomContrast(0.1),
-        keras.layers.Rescaling(1./255),
-        
-        keras.layers.Conv2D(32, (3, 3), activation=activation_func),
-        keras.layers.BatchNormalization(),
-        keras.layers.MaxPooling2D((2, 2)),
+model = keras.Sequential([
+    keras.layers.Input(shape=img.shape),
+    keras.layers.RandomTranslation(offset, offset, fill_mode="constant", fill_value=255),
+    keras.layers.RandomRotation(offset, fill_mode="constant", fill_value=255),
+    keras.layers.RandomZoom(offset, fill_mode="constant", fill_value=255),
+    keras.layers.RandomBrightness(offset),
+    keras.layers.RandomContrast(offset),
+    keras.layers.Rescaling(1./255),
+    
+    keras.layers.Conv2D(32, (3, 3), activation=activation_func),
+    keras.layers.BatchNormalization(),
+    keras.layers.MaxPooling2D((2, 2)),
 
-        keras.layers.Conv2D(64, (3, 3), activation=activation_func),
-        keras.layers.BatchNormalization(),
-        keras.layers.MaxPooling2D((2, 2)),
+    keras.layers.Conv2D(64, (3, 3), activation=activation_func),
+    keras.layers.BatchNormalization(),
+    keras.layers.MaxPooling2D((2, 2)),
 
-        keras.layers.Conv2D(128, (3, 3), activation=activation_func),
-        keras.layers.BatchNormalization(),
-        keras.layers.MaxPooling2D((2, 2)),
+    keras.layers.Conv2D(128, (3, 3), activation=activation_func),
+    keras.layers.BatchNormalization(),
+    keras.layers.MaxPooling2D((2, 2)),
 
-        keras.layers.Conv2D(256, (3, 3), activation=activation_func),
-        keras.layers.BatchNormalization(),
-        keras.layers.MaxPooling2D((2, 2)),
+    keras.layers.Conv2D(256, (3, 3), activation=activation_func),
+    keras.layers.BatchNormalization(),
+    keras.layers.MaxPooling2D((2, 2)),
 
-        keras.layers.Flatten(),
-        keras.layers.Dense(512, activation=activation_func),
-        keras.layers.Dropout(0.5),
-        keras.layers.Dense(len(class_names), activation='softmax')
-    ])
-    # Compilamos el modelo
-    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    keras.layers.Flatten(),
+    keras.layers.Dense(512, activation=activation_func),
+    keras.layers.Dropout(0.5),
+    keras.layers.Dense(len(class_names), activation='softmax')
+])
+# Compilamos el modelo
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-# Numero de intento
-try_num = 3
 # Ruta para guardar los archivos
-saved_path = f'./model/{activation_func}_{try_num}'
+saved_path = f"./model/{activation_func}{'_augmented' if augmented else ''}"
 os.makedirs(saved_path, exist_ok=True)
-
+# Guardamos la estructura del modelo (Solo para revisiones)
+aitest.save_summary(saved_path, model)
 # Callback para guardar el mejor modelo
 best = keras.callbacks.ModelCheckpoint(f'{saved_path}/best_model.keras', save_best_only=True)
 # Callback para detener el entrenamiento cuando el error de validación se reduzca
