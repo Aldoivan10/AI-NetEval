@@ -9,10 +9,12 @@ from tensorflow import Tensor
 from keras import Sequential
 from contextlib import redirect_stdout
 from tensorflow._api.v2.data import Dataset
+import matplotlib.pyplot as plt
+import math
 
 # Función para generar una sequencia
-def infinite_sequence():
-    num = 1
+def infinite_sequence(start: int = 1):
+    num = start
     while True:
         yield num
         num += 1
@@ -67,3 +69,24 @@ def save_summary(path: str, model: Sequential):
     with open(f"{path}/summary.txt", 'w') as f:
         with redirect_stdout(f):
             model.summary()
+
+# Funcion para agregar las imágenes a un plot
+def show_responses(batch, predictions: list[str], cols: int = 10):
+    # tamaño de la figura
+    plt.figure(figsize=(10, 10))
+    # Calcular numero de filas
+    rows = math.ceil(len(batch) // cols) + 1
+    # Iterar sobre las imágenes y sus predicciones
+    for i in range(len(batch)):
+        # Ajusta la cuadrícula de subgráficas
+        plt.subplot(rows, cols, i + 1)
+        # Muestra la imagen 
+        plt.imshow(batch[i], cmap="gray")
+        # Muestra la predicción en el título 
+        plt.title(predictions[i]) 
+        # Ocultar los ejes
+        plt.axis('off')
+    # Ajusta los espacios entre subgráficas
+    plt.tight_layout()
+    # Muestra la figura con las imágenes y sus predicciones
+    plt.show()
