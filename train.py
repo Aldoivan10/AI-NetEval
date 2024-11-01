@@ -51,7 +51,7 @@ test_ds = test_ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
 # Obtenemos una imagen de muestra del dataset de entrenamiento
 img = aiutil.get_first_img(train_ds)
 # Funcion de activacion
-activation_func = 'relu'
+activation_func = 'mish'
 # Aumento de datos
 augmented = True
 # Offset para las variaciones de datos
