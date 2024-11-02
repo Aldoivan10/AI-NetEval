@@ -34,12 +34,6 @@ aitest.to_img(img).show()
 # Obtenemos los nombres de las clasificaciones
 class_names = train_ds.class_names
 
-# Iprimimos el mínimo y máximo de una imágen de cada dataset
-# Solo para validar que tiene valores de solo 0 y 1
-aitest.print_min_max(test_ds, 'Test')
-aitest.print_min_max(train_ds, 'Train')
-aitest.print_min_max(validation_ds, 'Validation')
-
 # Optimizamos la lectura y preparación de los datos
 train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=tf.data.AUTOTUNE)
 validation_ds = validation_ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
