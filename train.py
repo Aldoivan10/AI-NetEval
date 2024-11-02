@@ -22,10 +22,6 @@ test_ds = keras.preprocessing.image_dataset_from_directory(
     seed=123,
     color_mode="grayscale")
 
-# Aplicar la función de preprocesamiento a cada imagen en el lote
-def apply_padding_to_batch(images, labels):
-    return tf.map_fn(lambda img: aiutil.add_white_padding(img, labels), images)
-
 # Indicamos su tipo  (No es obligatorio)
 train_ds: tf.data.Dataset
 test_ds: tf.data.Dataset
