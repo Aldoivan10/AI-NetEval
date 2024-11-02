@@ -16,15 +16,8 @@ train_ds, validation_ds = keras.preprocessing.image_dataset_from_directory(
     validation_split=0.2,
     color_mode="grayscale")
 
-# Obtenemos un dataset para la prueba del entrenamiento
-test_ds = keras.preprocessing.image_dataset_from_directory(
-    test_dir,
-    seed=123,
-    color_mode="grayscale")
-
 # Indicamos su tipo  (No es obligatorio)
 train_ds: tf.data.Dataset
-test_ds: tf.data.Dataset
 validation_ds: tf.data.Dataset
 
 # Mostramos una imagen para validar el dataset (Solo para pruebas)
@@ -37,7 +30,6 @@ class_names = train_ds.class_names
 # Optimizamos la lectura y preparación de los datos
 train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=tf.data.AUTOTUNE)
 validation_ds = validation_ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
-test_ds = test_ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
 # Obtenemos una imagen de muestra del dataset de entrenamiento
 img = aiutil.get_first_img(train_ds)
 # Funcion de activacion
