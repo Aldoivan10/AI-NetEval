@@ -68,19 +68,19 @@ model = keras.Sequential([
     
     keras.layers.Conv2D(32, (3, 3), activation=activation_func),
     keras.layers.BatchNormalization(),
-    keras.layers.MaxPool2D((2, 2)),
+    keras.layers.MaxPool2D(),
 
     keras.layers.Conv2D(64, (3, 3), activation=activation_func),
     keras.layers.BatchNormalization(),
-    keras.layers.MaxPool2D((2, 2)),
+    keras.layers.MaxPool2D(),
 
     keras.layers.Conv2D(128, (3, 3), activation=activation_func),
     keras.layers.BatchNormalization(),
-    keras.layers.MaxPool2D((2, 2)),
+    keras.layers.MaxPool2D(),
 
     keras.layers.Conv2D(256, (3, 3), activation=activation_func),
     keras.layers.BatchNormalization(),
-    keras.layers.MaxPool2D((2, 2)),
+    keras.layers.MaxPool2D(),
 
     keras.layers.Flatten(),
     keras.layers.Dense(512, activation=activation_func),
