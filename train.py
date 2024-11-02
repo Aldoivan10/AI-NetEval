@@ -54,16 +54,16 @@ img = aiutil.get_first_img(train_ds)
 activation_func = 'mish'
 # Aumento de datos
 augmented = True
-# Offset para las variaciones de datos
-offset = 0.1 if augmented else 0
+# Factor para las variaciones de datos
+factor = 0.1 if augmented else 0
 # Creamos el modelo
 model = keras.Sequential([
     keras.layers.Input(shape=img.shape),
-    keras.layers.RandomTranslation(offset, offset, fill_mode="constant", fill_value=255), # Capa para randomizar una traslación
-    keras.layers.RandomRotation(offset, fill_mode="constant", fill_value=255), # Capara para randomizar una rotación
-    keras.layers.RandomZoom(offset, fill_mode="constant", fill_value=255), # Capa para randomizar un zoom
-    keras.layers.RandomBrightness(offset), # Capa para randomizar el brillo
-    keras.layers.RandomContrast(offset), # Agregamos una capa para randomizar un contraste
+    keras.layers.RandomTranslation(factor, factor, fill_mode="constant", fill_value=255), # Capa para randomizar una traslación
+    keras.layers.RandomRotation(factor, fill_mode="constant", fill_value=255), # Capara para randomizar una rotación
+    keras.layers.RandomZoom(factor, fill_mode="constant", fill_value=255), # Capa para randomizar un zoom
+    keras.layers.RandomBrightness(factor), # Capa para randomizar el brillo
+    keras.layers.RandomContrast(factor), # Agregamos una capa para randomizar un contraste
     keras.layers.Rescaling(1./255), # Capa de normalización, pasar valores de 0-255 a 0-1
     
     keras.layers.Conv2D(32, (3, 3), activation=activation_func),
