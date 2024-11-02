@@ -88,7 +88,7 @@ aitest.save_summary(saved_path, model)
 # Callback para guardar el mejor modelo
 best = keras.callbacks.ModelCheckpoint(f'{saved_path}/best_model.keras', save_best_only=True)
 # Callback para detener el entrenamiento cuando el error de validación se reduzca
-stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=15, restore_best_weights=True)
+stopping = keras.callbacks.EarlyStopping(patience=15, restore_best_weights=True)
 # Callback para guardar el log (Solo para revisiones, se puede omitir)
 logger = keras.callbacks.CSVLogger(f"{saved_path}/train.log")
 # Número de epocas
