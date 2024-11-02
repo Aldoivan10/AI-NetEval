@@ -24,7 +24,7 @@ for batch, _ in test_ds:
     # Procesar el batch completo
     results = model(batch)
     # Obtener las predicciones para todo el batch
-    predictions = class_names[np.argmax(results.numpy(), axis=1)]  
+    predictions = class_names[np.argmax(results, axis=1)]  
     # Mostramos los resultados por batch
     aitest.show_responses(batch, predictions)
 
