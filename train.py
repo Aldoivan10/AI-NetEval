@@ -94,7 +94,7 @@ logger = keras.callbacks.CSVLogger(f"{saved_path}/train.log")
 # Número de epocas
 epochs = 50
 # Entrenamos el modelo
-history = model.fit(train_ds, validation_data=validation_ds, epochs=epochs, batch_size=32, validation_batch_size=32, callbacks=[stopping, logger, best])
+history = model.fit(train_ds, validation_data=validation_ds, epochs=epochs, validation_batch_size=32, callbacks=[stopping, logger, best])
 # Guardamos el historial (Solo para revisiones)
 with open(f'{saved_path}/history.json', 'w') as file:
     json.dump(history.history, file)
