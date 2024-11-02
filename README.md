@@ -36,7 +36,7 @@ La carpeta _util_ contiene las funciones que se utilizan en el proyecto.:
 
 `use.py` es el archivo para poder utilizar un modelo ya entrenado. Este archivo se encarga de cargar el modelo, crear un dataset de prueba y hacer predicciones.
 
-`history.py` es el archivo para poder visualizar el historial de entrenamiento de un modelo. Su función es poder analisar el comportamiento del modelo durante el entrenamiento. Para ejecutar el código, es necesario pasarle como argumento el nombre del modelo que se desea visualizar (que esten dentro de la parpeta model), si no se le agrega ningún parámetro, usará mish_augmented. Ejemplo:
+`history.py` es el archivo para poder visualizar el historial de entrenamiento de un modelo. Su función es poder analisar el comportamiento del modelo durante el entrenamiento. Para ejecutar el código, es necesario pasarle como argumento el nombre del modelo que se desea visualizar (que esten dentro de la carpeta model), si no se le agrega ningún parámetro, usará mish_augmented. Ejemplo:
 
 ```python
 python history.py mish # por defecto mish_augmented
