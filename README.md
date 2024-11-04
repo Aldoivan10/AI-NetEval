@@ -41,3 +41,7 @@ La carpeta _util_ contiene las funciones que se utilizan en el proyecto.:
 ```python
 python history.py mish # por defecto mish_augmented
 ```
+
+## Créditos
+
+Este proyecto utiliza la biblioteca [imutils](https://github.com/PyImageSearch/imutils) que está bajo la licencia MIT. 
