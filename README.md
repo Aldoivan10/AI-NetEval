@@ -24,13 +24,13 @@ pip install -r requirements.txt
 
 ## Uso
 
-```dataset.py``` es el archivo para crear un dataset a partir de la imagen de un examen contestado por una persona.
+- ```dataset.py``` es el archivo para crear un dataset a partir de la imagen de un examen contestado por una persona.
 
-```train.py``` es el archivo para entrenar un modelo. Este archivo se encarga de cargar los datos, crear el modelo, compilarlo, entrenarlo y guardarlo.
+- ```train.py``` es el archivo para entrenar un modelo. Este archivo se encarga de cargar los datos, crear el modelo, compilarlo, entrenarlo y guardarlo.
 
-```use.py``` es el archivo para utilizar un modelo ya entrenado. Este archivo se encarga de cargar el modelo, crear un dataset de prueba y hacer predicciones.
+- ```use.py``` es el archivo para utilizar un modelo ya entrenado. Este archivo se encarga de cargar el modelo, crear un dataset de prueba y hacer predicciones.
 
-```history.py``` es el archivo para visualizar el historial de entrenamiento de un modelo. Su función es analizar el comportamiento del modelo durante el entrenamiento. Para ejecutar el código, es necesario pasar como argumento el nombre del modelo que se desea visualizar (que esté dentro de la carpeta model). Si no se le agrega ningún parámetro, usará mish_augmented. Ejemplo:
+- ```history.py``` es el archivo para visualizar el historial de entrenamiento de un modelo. Su función es analizar el comportamiento del modelo durante el entrenamiento. Para ejecutar el código, es necesario pasar como argumento el nombre del modelo que se desea visualizar (que esté dentro de la carpeta model). Si no se le agrega ningún parámetro, usará mish_augmented. Ejemplo:
 
 ```bash
 python history.py # por defecto usaría mish_augmented
