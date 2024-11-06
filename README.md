@@ -1,6 +1,6 @@
 # AI-NetEval
 
-Desarrollo de una red neuronal convolucional para obtener las respuestas de un examen y poder calificarlo.
+Desarrollo de una red neuronal convolucional para obtener las respuestas de un examen y poder calificarlo. El archivo ```Identificación de Respuestas.pdf``` contiene toda la explicación, si les ha gustado el proyecto, dar estrellita :D.
 
 ## Instalación
 
