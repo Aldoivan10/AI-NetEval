@@ -1,26 +1,26 @@
 from PIL import Image
 from util import aiutil, aitest
 
-img_path = "./images/Examen.png" # Ruta de la imagen
+img_path = "./images/Prueba.jpg" # Ruta de la imagen
 def_size = (1128, 1226)          # Tamaño por defecto
 
 # Leemos la imágen y estandarizamos su tamaño
 img = Image.open(img_path).resize(def_size)
-# Reducimos el ruido y convertimos en escala de grises
-img = aiutil.smooth_img(img)
 # Imagen auxiliar para dibujar lo obtenido (Solo para pruebas)
 temp = img.copy()
+# Reducimos el ruido y convertimos en escala de grises
+img = aiutil.smooth_img(img)
 # Obtenemos los contornos
-countours = aiutil.get_countours(img, min_h=600)
+filter_contours, contours = aiutil.get_countours(img, min_h=600)
 # Dibujamos los contornos (Solo para pruebas)
-aitest.draw_cnts(temp, countours)
+aitest.draw_cnts(temp, contours)
 # Mostramos la imagen (Solo para pruebas)
 temp.show()
 
 save_path = "./Train"
 
 # Obtenemos las imágenes
-responses = aiutil.get_responses(img, countours)
+responses = aiutil.get_responses(img, filter_contours)
 
 # Por cada columna
 for c, rows in enumerate(responses):
