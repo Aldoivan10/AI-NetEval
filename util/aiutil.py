@@ -58,9 +58,9 @@ def get_countours(img: Image.Image,  min_h: int = 100) -> List[MatLike]:
     # Aproximamos cada contorno devuelve una tupla (polígono, contenedor)
     contours = [approx_contour(cnt) for cnt in contours]
     # Filtramos los contornos que no cumplen los criterios de alto mínimo y no sea de 4 lados
-    contours = [(poly, rect) for poly, rect in contours if rect[-1] >= min_h and len(poly) == 4]
+    filter_contours = [(poly, rect) for poly, rect in contours if rect[-1] >= min_h and len(poly) == 4]
     # Retornamos los contornos
-    return contours
+    return filter_contours, contours
 
 # Función para obtener las respuestas de una columna
 def get_responses(img: Image.Image, countours: List[MatLike], rows: int = 10) -> List[List[Image.Image]]:
