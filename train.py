@@ -90,3 +90,5 @@ history = model.fit(train_ds, validation_data=validation_ds, epochs=epochs, vali
 # Guardamos el historial (Solo para revisiones)
 with open(f'{saved_path}/history.json', 'w') as file:
     json.dump(history.history, file)
+# Guardamos la evaluacion (Solo para revisiones)
+aitest.evaluate_model(model, saved_path)

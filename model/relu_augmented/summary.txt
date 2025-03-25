@@ -54,3 +54,6 @@ Model: "sequential"
  Total params: 26,082,949 (99.50 MB)
  Trainable params: 26,081,989 (99.49 MB)
  Non-trainable params: 960 (3.75 KB)
+ Recall: 0.9918032786885246
+ Precision: 0.9836065573770492
+ F1-score-: 0.9861901044570833

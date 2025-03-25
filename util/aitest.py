@@ -11,6 +11,9 @@ from tensorflow import Tensor
 from contextlib import redirect_stdout
 from tensorflow._api.v2.data import Dataset
 import matplotlib.pyplot as plt
+from numpy import argmax
+import keras.api.preprocessing as preprocessing
+from sklearn.metrics import precision_score, recall_score, f1_score
 
 # Función para generar una sequencia
 def infinite_sequence(start: int = 1):
@@ -69,6 +72,22 @@ def save_summary(path: str, model: Sequential):
     with open(f"{path}/summary.txt", 'w') as f:
         with redirect_stdout(f):
             model.summary()
+
+# Funcion para evaluar el modelo (F1 score y recall)
+def evaluate_model(model: Sequential, path: str):
+    test_ds = preprocessing.image_dataset_from_directory("images/Test", color_mode="grayscale", shuffle=False)
+    # Obtenemos las predicciones
+    y_true, y_pred = [], []
+    for images, labels in test_ds:
+        y_true.extend(labels)
+        y_pred.extend(argmax(model(images), axis=1))
+    
+    precision = precision_score(y_true, y_pred, average="weighted")
+    recall = recall_score(y_true, y_pred, average="weighted")
+    f1 = f1_score(y_true, y_pred, average="weighted")
+
+    with open(f"{path}/summary.txt", "a") as f:
+        f.write(f" Recall: {precision}\n Precision: {recall}\n F1-score-: {f1}")
 
 # Funcion para agregar las imágenes a un plot
 def show_responses(batch: Tensor, predictions: list[str], cols: int = 10):
