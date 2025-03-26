@@ -83,6 +83,19 @@ def get_responses(img: Image.Image, countours: List[MatLike], rows: int = 10) ->
     # Retornamos la lista de respuestas
     return responses
 
+# Funcion para convertir una lista de PIl.Image a un dataset
+def to_dataset(images: List[List[Image.Image]]):
+    # Aplanamos el arraglo
+    images = [img for col in images for img in col]
+    # Obtenemos el tamaño de la primera imagen para usarla como referencia
+    size = images[0].size
+    # Redimencionamos las images para que todas tegan el mismo tamaño
+    images = list(map(lambda img: img.resize(size, Image.Resampling.LANCZOS), images))
+    # Convertimos las imagenes en tensores
+    images = [tf.convert_to_tensor(np.array(img), dtype=tf.float32) for img in images]
+    # Retornamos el dataset
+    return tf.data.Dataset.from_tensor_slices(images)
+
 # Función para hacer cuadrada una imagen
 def square_img(image: Image.Image, size: int = 256, pad_color: tuple[int, int, int] = (255,255,255)):
     # Obtenemos el ancho y alto de la imagen
