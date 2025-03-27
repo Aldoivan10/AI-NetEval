@@ -1,7 +1,6 @@
 import keras.api.models as  models
 from PIL import Image
 from util import aiutil
-import numpy as np
 import tensorflow as tf
 
 # Direcciones de los archivos
