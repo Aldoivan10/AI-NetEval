@@ -30,7 +30,7 @@ results = model(dataset)
 predictions = tf.argmax(results, axis=-1).numpy()
 # Obtenemos las respuestas
 responses =  [class_names[i] for i in predictions]
-# Agrupamos las respuestas por columna
+# Agrupamos las respuestas por columna (se agrupan de 10 en 10 ya que son 4 columnas de 10 preguntas cada una)
 cols = [responses[i:i+10] for i in range(0, len(responses), 10)]
 # Imprimimos las predicciones
 print(cols)
