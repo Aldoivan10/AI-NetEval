@@ -91,10 +91,12 @@ def to_dataset(images: List[List[Image.Image]]):
     size = images[0].size
     # Redimencionamos las images para que todas tegan el mismo tamaño
     images = list(map(lambda img: img.resize(size, Image.Resampling.LANCZOS), images))
+    # Agregamos padding a las imagenes para hacerlas cuadradas y convertimos a escala de grises
+    images = list(map(lambda img: square_img(img).convert("L"), images))
     # Convertimos las imagenes en tensores
     images = [tf.convert_to_tensor(np.array(img), dtype=tf.float32) for img in images]
     # Retornamos el dataset
-    return tf.data.Dataset.from_tensor_slices(images)
+    return tf.convert_to_tensor(images)
 
 # Función para hacer cuadrada una imagen
 def square_img(image: Image.Image, size: int = 256, pad_color: tuple[int, int, int] = (255,255,255)):
