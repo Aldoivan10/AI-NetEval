@@ -12,7 +12,7 @@ El proyecto esta creado con el gestor de dependencias `uv`, si lo usas solo requ
 uv sync
 ```
 
-### Vanilla
+### **Vanilla**
 
 Las dependencias también se encuentra en el archivo `requirements.txt` si es que no usas ningún gestor de dependencias. Para instalarlas, ejecuta el siguiente comando:
 
