@@ -1,14 +1,11 @@
 from PIL import Image
-from src.util import aiutil
 import tensorflow as tf
+from src.util import aiutil
 import keras.models as kmodels
-
-# Direcciones de los archivos
-model_path = "model/mish_augmented/best_model.keras"
-exam_path = "images/Prueba.jpg"
+from config.settings import config
 
 # Cargamos el modelo ya entrenado
-model = kmodels.load_model(model_path)
+model = kmodels.load_model(config.MODEL_PATH / "best_model.keras")
 if model:
     # Clases usadas
     class_names = ["A", "B", "C", "D", "X"]
@@ -56,12 +53,13 @@ if model:
         "B",
     ]
     # Cargamos el examen y la convertimos a escala de grises
-    def_size = (1128, 1226)  # Tamaño por defecto
-    img = Image.open(exam_path)
+    img = Image.open(config.SRC_PATH / "Prueba.jpg").resize(config.IMG_SIZE)
     # Reducimos el ruido y convertimos en escala de grises
     img = aiutil.smooth_img(img)
     # Obtenemos los contornos
-    filter_contours, contours = aiutil.get_countours(img, min_h=600)
+    filter_contours, contours = aiutil.get_countours(
+        img, min_h=config.IMG_CONTOUR_TARGET_SIZE
+    )
     # Obtenemos las imágenes
     responses = aiutil.get_responses(img, filter_contours)
     # Convertimos las imágenes de las respuestas en un tensorflow dataset

@@ -11,7 +11,7 @@ import tensorflow as tf
 from sklearn import metrics
 import matplotlib.pyplot as plt
 from PIL import ImageDraw, Image
-from keras import Sequential, utils as kutils
+from keras import Sequential
 
 
 # Función para generar una sequencia
@@ -100,15 +100,12 @@ def save_summary(path: str, model: Sequential):
             model.summary()
 
 
-# Funcion para evaluar el modelo (F1 score y recall)
-def evaluate_model(model: Sequential, path: str):
-
-    test_ds = kutils.image_dataset_from_directory(
-        "images/Test", color_mode="grayscale", shuffle=False
-    )
+# Funcion para evaluar el modelo
+def evaluate_model(model: Sequential, dataset: tf.data.Dataset, path: str):
     # Obtenemos las predicciones
     y_true, y_pred = [], []
-    for images, labels in test_ds:
+
+    for images, labels in dataset:
         y_true.extend(labels)
         y_pred.extend(np.argmax(model(images), axis=1))
 

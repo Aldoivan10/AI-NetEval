@@ -1,28 +1,37 @@
 from typing import Any
+from config.settings import config
 
 import numpy as np
 from util import aitest
 from keras import models, preprocessing
 
-# Direcciones de los archivos
-model_path = "model/mish_augmented/best_model.keras"
-test_path = "images/Test"
-img_path = f"{test_path}/A/A_1.jpg"
-
 # Cargamos el modelo ya entrenado
-model = models.load_model(model_path)
-
-################################################################################
-### Predecir un DATASET                                                      ###
-################################################################################
+model = models.load_model(config.MODEL_PATH / "best_model.keras")
 
 # Cargamos el dataset de prueba (No olvidar que debe estar en escala de grises)
 test_ds: Any = preprocessing.image_dataset_from_directory(
-    test_path, color_mode="grayscale"
+    config.TEST_PATH, color_mode="grayscale"
 )
 if test_ds and model:
     # Obtenemos los nombres de las clases
     class_names = np.array(test_ds.class_names + ["X"])
+
+    ################################################################################
+    ### Predecir un DATASET                                                      ###
+    ################################################################################
+
+    results = model(test_ds)
+    predictions = class_names[np.argmax(results, axis=1)]
+
+    """ aitest.evaluate_model(
+        model,
+        test_ds,
+    ) """
+
+    ################################################################################
+    ### Predecir un DATASET por batches                                          ###
+    ################################################################################
+
     # Obtenemos las respuestas, por cada conjunto en el dataset
     for batch, _ in test_ds:
         # Procesar el batch completo
@@ -38,7 +47,9 @@ if test_ds and model:
 
     # Cargamos una imagen, estas imágenes deben tener el mismo tamaño
     # que las de entrenamiento y estar en escala de grises
-    img = preprocessing.image.load_img(img_path, color_mode="grayscale")
+    img = preprocessing.image.load_img(
+        config.TEST_PATH / "A" / "A_1.jpg", color_mode="grayscale"
+    )
     # Mostramos la imagen (Solo para pruebas)
     img.show()
     # Conertimos la imagen en un arreglo numpy

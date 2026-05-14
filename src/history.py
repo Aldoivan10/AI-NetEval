@@ -1,3 +1,5 @@
+from config.settings import config
+
 import matplotlib.pyplot as plt
 import json
 import sys
@@ -5,15 +7,14 @@ import sys
 plt.style.use("pacoty.mplstyle")
 
 args = sys.argv
-model = "mish_augmented" if len(args) == 1 else args[1]
-path = f"model/{model}"
+model = config.MODEL if len(args) == 1 else config.MODEL_ROOT_PATH / args[1]
 
 # Mostrar la estructura del modelo
-with open(f"{path}/summary.txt") as f:
+with open(model / "summary.txt") as f:
     print(f.read())
 
 # Abrir el historial
-with open(f"{path}/history.json", "r") as file:
+with open(model / "history.json", "r") as file:
     history_loaded = json.load(file)
 
 # Extraer la pérdida y precisión
