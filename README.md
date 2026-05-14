@@ -34,20 +34,32 @@ pip install -r requirements.txt
 
 ## Uso
 
+- `.env.local` es el archivo donde se asignan las configuraciones iniciales:
+
+```
+ACTIVATION_FUNCTION # Función de activación que usará el modelo en el entrenamiento
+DATA_AUGMENTED # Indicar si se usará el aumento de datos
+MODEL_ROOT_PATH # Ruta donde se guardará el modelo y sus datos
+SRC_PATH # Ruta donde se encuentran las imágenes tanto de entrenamiento como de prueba
+MODEL_NAME # Nombre que tendrá el modelo
+IMG_SIZE # Medida estandar para los exámenes escaneados (si no se cumple se redimencionan)
+IMG_CONTOUR_TARGET_SIZE # Alto mínimo que tiene un recuadro con respuestas en el exámen escaneado
+```
+
 - `dataset.py` es el archivo para crear un dataset a partir de la imagen de un examen contestado por una persona.
 
 - `train.py` es el archivo para entrenar un modelo. Este archivo se encarga de cargar los datos, crear el modelo, compilarlo, entrenarlo y guardarlo.
 
 - `main.py` es el archivo para utilizar un modelo ya entrenado. Este archivo se encarga de cargar el modelo, crear un dataset de prueba y hacer predicciones.
 
-- `history.py` es el archivo para visualizar el historial de entrenamiento de un modelo. Su función es analizar el comportamiento del modelo durante el entrenamiento. Para ejecutar el código, es necesario pasar como argumento el nombre del modelo que se desea visualizar (que esté dentro de la carpeta model). Si no se le agrega ningún parámetro, usará mish_augmented. Ejemplo:
+- `history.py` es el archivo para visualizar el historial de entrenamiento de un modelo. Su función es analizar el comportamiento del modelo durante el entrenamiento. Para ejecutar el código, es necesario pasar como argumento el nombre del modelo que se desea visualizar (que esté dentro de la carpeta model). Si no se le agrega ningún parámetro, usará el modelo definido en .env. Ejemplo:
 
 ```bash
-uv run src/history.py # por defecto usaría mish_augmented
+uv run src/history.py # por defecto usaría el modelo definido en .env
 
 o
 
-python src/history.py # por defecto usaría mish_augmented
+python src/history.py # por defecto usaría el modelo definido en .env
 ```
 
 ```bash

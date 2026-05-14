@@ -4,6 +4,8 @@ absl-py==2.4.0
     # via
     #   keras
     #   tensorflow
+annotated-types==0.7.0
+    # via pydantic
 astunparse==1.6.3
     # via tensorflow
 certifi==2026.4.22
@@ -80,12 +82,20 @@ pillow==12.2.0
     # via matplotlib
 protobuf==7.34.1
     # via tensorflow
+pydantic==2.13.4
+    # via pydantic-settings
+pydantic-core==2.46.4
+    # via pydantic
+pydantic-settings==2.14.1
+    # via app
 pygments==2.20.0
     # via rich
 pyparsing==3.3.2
     # via matplotlib
 python-dateutil==2.9.0.post0
     # via matplotlib
+python-dotenv==1.2.2
+    # via pydantic-settings
 requests==2.34.0
     # via tensorflow
 rich==15.0.0
@@ -112,7 +122,14 @@ typing-extensions==4.15.0
     # via
     #   grpcio
     #   optree
+    #   pydantic
+    #   pydantic-core
     #   tensorflow
+    #   typing-inspection
+typing-inspection==0.4.2
+    # via
+    #   pydantic
+    #   pydantic-settings
 urllib3==2.7.0
     # via requests
 wheel==0.47.0
