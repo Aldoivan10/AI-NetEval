@@ -1,4 +1,5 @@
 from typing import Any
+from numpy.typing import NDArray
 from config.settings import config
 
 import numpy as np
@@ -6,12 +7,12 @@ from util import aitest
 from keras import models, preprocessing
 
 # Cargamos el modelo ya entrenado
-model = models.load_model(config.MODEL_PATH / "best_model.keras")
-
+model: Any = models.load_model(config.MODEL)
 # Cargamos el dataset de prueba (No olvidar que debe estar en escala de grises)
 test_ds: Any = preprocessing.image_dataset_from_directory(
-    config.TEST_PATH, color_mode="grayscale"
+    config.TEST_PATH, color_mode="grayscale", shuffle=False
 )
+
 if test_ds and model:
     # Obtenemos los nombres de las clases
     class_names = np.array(test_ds.class_names + ["X"])
@@ -20,13 +21,15 @@ if test_ds and model:
     ### Predecir un DATASET                                                      ###
     ################################################################################
 
-    results = model(test_ds)
-    predictions = class_names[np.argmax(results, axis=1)]
+    # Se realizan las predicciones
+    predictions = model.predict(test_ds)
+    # Se obtienen las respuestas
+    results: NDArray = class_names[np.argmax(predictions, axis=1)]
 
-    """ aitest.evaluate_model(
-        model,
-        test_ds,
-    ) """
+    # Se avalua el modelo, recall, f1, etc
+    aitest.evaluate_model(model, predictions, class_names, test_ds, config.MODEL_PATH)
+    # Se guardan las predicciones como imágen
+    aitest.save_predictions(test_ds, results, config.MODEL_PATH)
 
     ################################################################################
     ### Predecir un DATASET por batches                                          ###
@@ -35,11 +38,11 @@ if test_ds and model:
     # Obtenemos las respuestas, por cada conjunto en el dataset
     for batch, _ in test_ds:
         # Procesar el batch completo
-        results = model(batch)
+        predictions = model(batch)
         # Obtener las predicciones para todo el batch
-        predictions = class_names[np.argmax(results, axis=1)]
+        results = class_names[np.argmax(results, axis=1)]
         # Mostramos los resultados por batch
-        aitest.show_responses(batch, predictions)
+        aitest.show_responses(batch, results)
 
     ################################################################################
     ### Predecir una IMAGEN                                                      ###

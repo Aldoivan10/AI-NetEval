@@ -5,7 +5,7 @@ import keras.models as kmodels
 from config.settings import config
 
 # Cargamos el modelo ya entrenado
-model = kmodels.load_model(config.MODEL_PATH / "best_model.keras")
+model = kmodels.load_model(config.MODEL)
 if model:
     # Clases usadas
     class_names = ["A", "B", "C", "D", "X"]

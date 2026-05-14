@@ -1,3 +1,4 @@
+from pathlib import Path
 from PIL._typing import _Ink
 from numpy.typing import NDArray
 from cv2.typing import MatLike, Rect, Point
@@ -94,32 +95,50 @@ def print_min_max(dataset: Iterable, name="Dataset"):
 
 
 # Función para guardar el modelo
-def save_summary(path: str, model: Sequential):
-    with open(f"{path}/summary.txt", "w") as f:
+def save_summary(path: Path, model: Sequential):
+    with open(path / "summary.txt", "w") as f:
         with contextlib.redirect_stdout(f):
             model.summary()
 
 
 # Funcion para evaluar el modelo
-def evaluate_model(model: Sequential, dataset: tf.data.Dataset, path: str):
+def evaluate_model(
+    model: Sequential,
+    predictions: NDArray,
+    class_names: NDArray,
+    dataset: tf.data.Dataset,
+    path: Path,
+):
     # Obtenemos las predicciones
-    y_true, y_pred = [], []
+    y_pred = np.argmax(predictions, axis=1)
+    # Obtenemos los valores verdaderos
+    y_test = np.concatenate([y.numpy() for _, y in dataset], axis=0)
 
-    for images, labels in dataset:
-        y_true.extend(labels)
-        y_pred.extend(np.argmax(model(images), axis=1))
+    # Se crea la matríz de confusión
+    confussion_matrix = metrics.confusion_matrix(y_test, y_pred)
+    # Se crea el reporte de evaluación
+    report = metrics.classification_report(y_test, y_pred, zero_division=0)
 
-    precision = metrics.precision_score(y_true, y_pred, average="weighted")
-    recall = metrics.recall_score(y_true, y_pred, average="weighted")
-    f1 = metrics.f1_score(y_true, y_pred, average="weighted")
+    # Se grafica la matríz de confusión
+    metrics.ConfusionMatrixDisplay.from_predictions(
+        y_test, y_pred, display_labels=class_names
+    )
+    # Se guarda la matríz de confución
+    plt.savefig(path / "confusion_matrix.png", dpi=300, bbox_inches="tight")
+    # Se limpia el layout
+    plt.close()
 
-    with open(f"{path}/summary.txt", "a") as f:
-        f.write(f" Recall: {precision}\n Precision: {recall}\n F1-score-: {f1}")
+    # Se garda la estructura del modelo
+    save_summary(path, model)
+    # Se agregan las evaluaciones
+    with open(path / "summary.txt", "a") as f:
+        f.write(f"\nConfusion matrix: \n\n {confussion_matrix}")
+        f.write(f"\n\n {report}")
 
 
 # Funcion para agregar las imágenes a un plot
 def show_responses(batch: List[MatLike], predictions: NDArray, cols: int = 10):
-    # tamaño de la figura
+    # Tamaño de la figura
     plt.figure(figsize=(10, 10))
     # Calcular numero de filas
     rows = math.ceil(len(batch) // cols) + 1
@@ -137,3 +156,40 @@ def show_responses(batch: List[MatLike], predictions: NDArray, cols: int = 10):
     plt.tight_layout()
     # Muestra la figura con las imágenes y sus predicciones
     plt.show()
+
+
+# Función para guardar todas las predicciones realizadas
+def save_predictions(dataset: tf.data.Dataset, predictions: NDArray, path: Path):
+    # Obtenemos las imágenes en un solo batch
+    unbatched = dataset.unbatch()
+    # Total de imágenes
+    total = sum(1 for _ in unbatched)
+    # Se calcula el total de columnas
+    cols = math.ceil(math.sqrt(total))
+    # Se calcula el total de filas
+    rows = math.ceil(total / cols)
+    # Indice de la imagen actual
+    index = 1
+
+    # Se inicializa la figura
+    plt.figure(figsize=(3 * cols, 3 * rows))
+
+    # Por cada imagen-predicción
+    for (img, _), pred in zip(dataset.unbatch(), predictions):
+        # Ajusta la cuadrícula de subgráficas
+        plt.subplot(rows, cols, index)
+        # Se muestra la imágen
+        plt.imshow(img.numpy().squeeze(), cmap="gray")
+        # Se muestra su predicción
+        plt.title(pred, fontsize=30)
+        # Ocultar los ejes
+        plt.axis("off")
+        # Se aumenta el índice
+        index = index + 1
+
+    # Ajusta los espacios entre subgráficas
+    plt.tight_layout()
+    # Se guarda las predicciones
+    plt.savefig(path / "predictions.png", dpi=300, bbox_inches="tight")
+    # Se limpia el layout
+    plt.close()

@@ -73,9 +73,7 @@ model.compile(
 # Guardamos la estructura del modelo (Solo para revisiones)
 aitest.save_summary(config.MODEL_PATH, model)
 # Callback para guardar el mejor modelo
-best = keras.callbacks.ModelCheckpoint(
-    config.MODEL_PATH / "best_model.keras", save_best_only=True
-)
+best = keras.callbacks.ModelCheckpoint(config.MODEL, save_best_only=True)
 # Callback para detener el entrenamiento cuando el error de validación se reduzca
 stopping = keras.callbacks.EarlyStopping(patience=15, restore_best_weights=True)
 # Callback para guardar el log (Solo para revisiones, se puede omitir)
@@ -93,5 +91,3 @@ history = model.fit(
 # Guardamos el historial (Solo para revisiones)
 with open(config.MODEL_PATH / "history.json", "w") as file:
     json.dump(history.history, file)
-# Guardamos la evaluacion (Solo para revisiones)
-# aitest.evaluate_model(model, saved_path)

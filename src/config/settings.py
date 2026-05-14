@@ -1,9 +1,7 @@
-from typing import Annotated
-
-from PIL.ImagePath import Path
+from pathlib import Path
 from pydantic_settings import BaseSettings
 from functools import cached_property
-from pydantic import computed_field, BeforeValidator
+from pydantic import computed_field
 
 
 def parse_comma_tuple(v: str | tuple) -> tuple:
@@ -16,11 +14,11 @@ class Settings(BaseSettings):
     ACTIVATION_FUNCTION: str = "relu"
     DATA_AUGMENTED: bool = False
     MODEL_ROOT_PATH: Path = Path("model")
+    MODEL_NAME: str = "best_model.keras"
     SRC_PATH: Path = Path("images")
-    IMG_SIZE: Annotated[tuple[int, int], BeforeValidator(parse_comma_tuple)] = (
-        1128,
-        1226,
-    )
+    # Ancho x Alto para normalizar los exámenes escaneados
+    IMG_SIZE: tuple[int, int] = (1128, 1226)
+    # Tamaño mínimo de los recuadros de las respuestas
     IMG_CONTOUR_TARGET_SIZE: int = 600
 
     @computed_field
@@ -37,18 +35,16 @@ class Settings(BaseSettings):
     @cached_property
     def MODEL_PATH(self) -> Path:
         if self.DATA_AUGMENTED:
-            path = self.MODEL_PATH / f"{self.ACTIVATION_FUNCTION}_augmented"
+            path = self.MODEL_ROOT_PATH / f"{self.ACTIVATION_FUNCTION}_augmented"
         else:
-            path = self.MODEL_PATH / self.ACTIVATION_FUNCTION
+            path = self.MODEL_ROOT_PATH / self.ACTIVATION_FUNCTION
         path.mkdir(parents=True, exist_ok=True)
-        return path
+        return path.resolve()
 
     @computed_field
     @cached_property
     def MODEL(self) -> Path:
-        if self.DATA_AUGMENTED:
-            return f"{self.ACTIVATION_FUNCTION}_augmented"
-        return self.ACTIVATION_FUNCTION
+        return self.MODEL_PATH / self.MODEL_NAME
 
     model_config = {"env_file": ".env.local"}
 

@@ -7,7 +7,7 @@ import sys
 plt.style.use("pacoty.mplstyle")
 
 args = sys.argv
-model = config.MODEL if len(args) == 1 else config.MODEL_ROOT_PATH / args[1]
+model = config.MODEL_PATH if len(args) == 1 else config.MODEL_ROOT_PATH / args[1]
 
 # Mostrar la estructura del modelo
 with open(model / "summary.txt") as f:
